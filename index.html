@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NG's TF2 Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color, #1a1a1a);
+      color: var(--text-color, white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      overflow: hidden;
+      transition: color 0.5s ease, background-color 0.5s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Centered Welcome Message */
+    .welcome-message {
+      font-size: 48px;
+      margin: 10px 0 20px 0;
+      text-align: center;
+      color: var(--button-color, #4CAF50);
+      animation: slideIn 1.5s ease-in-out;
+    }
+
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Profile Section on Far Right */
+    .profile-section {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      text-align: right;
+    }
+
+    .profile-section img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid var(--button-color, #4CAF50);
+      cursor: pointer;
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: #333;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: var(--button-color, #4CAF50);
+    }
+
+    .profile-section:hover .dropdown-menu {
+      display: block;
+    }
+
+    /* Dashboard Section */
+    .dashboard {
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .banner {
+      background-color: #333;
+      color: white;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .banner h2 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--text-color, #4CAF50);
+    }
+
+    .banner a {
+      text-decoration: none;
+      background-color: var(--button-color, #4CAF50);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+
+    .banner a:hover {
+      background-color: #45a049;
+    }
+
+    .banner:hover {
+      transform: translateY(-10px);
+      background-color: #444;
+    }
+
+    /* Pop-up Modal */
+    .about-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #444;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      color: white;
+    }
+
+    .about-popup p {
+      margin: 10px 0;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+    }
+
+    /* Color Picker */
+    .color-picker {
+      display: none;
+    }
+
+    /* Back to Home Button */
+    .back-button {
+      margin: 20px 0;
+      padding: 10px 20px;
+      background-color: var(--button-color, #4CAF50);
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+    }
+
+    /* First-Time Setup Style */
+    .profile-setup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #444;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: 400px;
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.7);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .profile-setup h2 {
+      font-size: 24px;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .profile-setup input[type="text"],
+    .profile-setup input[type="file"] {
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .profile-setup button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-setup button:hover {
+      background-color: #45a049;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Profile Setup Box -->
+  <div class="profile-setup" id="profile-setup">
+    <h2>Profile Setup</h2>
+    <label for="username-input">What should we call you?</label>
+    <input type="text" id="username-input" placeholder="Enter your name">
+    <label for="profile-pic-input">Upload Profile Picture</label>
+    <input type="file" id="profile-pic-input" accept="image/*">
+    <button id="save-profile-btn">Save Profile</button>
+  </div>
+
+  <!-- Welcome Message at the top center -->
+  <h1 class="welcome-message" id="welcome-message">Welcome back, <span id="username">Username</span></h1>
+
+  <!-- Profile Section on Far Right -->
+  <div class="profile-section" id="profile-section">
+    <img src="profile-pic.jpg" alt="Profile Picture" id="profile-pic">
+    <div class="dropdown-menu">
+      <a href="#" id="customize-btn">Customize</a>
+      <a href="#" id="reset-defaults-btn">Reset Defaults</a>
+      <a href="#" id="about-btn">About</a>
+    </div>
+    <!-- Hidden Color Picker -->
+    <input type="color" class="color-picker" id="text-color-picker">
+  </div>
+
+  <!-- Dashboard Container -->
+  <div class="container" id="dashboard-container">
+    <div class="dashboard">
+      <div class="banner" id="banner-1">
+        <h2>Marketplace.tf</h2>
+        <a href="https://marketplace.tf" target="_blank">Enter</a>
+      </div>
+      <div class="banner" id="banner-2">
+        <h2>Scrap.tf</h2>
+        <a href="https://scrap.tf" target="_blank">Enter</a>
+      </div>
+      <div class="banner" id="banner-3">
+        <h2>Mannco.store</h2>
+        <a href="https://mannco.store" target="_blank">Enter</a>
+      </div>
+      <div class="banner" id="banner-4">
+        <h2>Backpack.tf</h2>
+        <a href="https://backpack.tf" target="_blank">Enter</a>
+      </div>
+    </div>
+
+    <!-- Communities Section -->
+    <div class="dashboard">
+      <div class="banner">
+        <h2>r/tf2</h2>
+        <a href="https://reddit.com/r/tf2" target="_blank">Enter</a>
+      </div>
+      <div class="banner">
+        <h2>r/tf2shitposterclub</h2>
+        <a href="https://reddit.com/r/tf2shitposterclub" target="_blank">Enter</a>
+      </div>
+      <div class="banner">
+        <h2>r/TF2fashionadvice</h2>
+        <a href="https://reddit.com/r/TF2fashionadvice" target="_blank">Enter</a>
+      </div>
+      <div class="banner">
+        <h2>r/RandomActsOfTf2</h2>
+        <a href="https://reddit.com/r/RandomActsOfTf2" target="_blank">Enter</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Pop-up Modal -->
+  <div class="about-popup" id="about-popup">
+    <button class="close-btn" id="close-about-popup">X</button>
+    <p>Hey! Welcome to my CPU & Memory efficient TF2 dashboard. Instead of bookmarking all your favorite TF2 sites individually, you can use this to save space and resources!</p>
+    <p>Disclaimer: The list of subreddits & websites mentioned is not exhaustive, only the top & most frequently used sites & subreddits were added.</p>
+  </div>
+
+  <!-- JavaScript to handle dynamic username, profile picture, and settings -->
+  <script>
+    // Profile Setup Save
+    const firstTime = !localStorage.getItem('username');
+    const profileSetup = document.getElementById('profile-setup');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const profileSection = document.getElementById('profile-section');
+    const dashboardContainer = document.getElementById('dashboard-container');
+
+    if (firstTime) {
+      profileSetup.style.display = 'block';
+      welcomeMessage.style.display = 'none';
+      profileSection.style.display = 'none';
+      dashboardContainer.style.display = 'none';
+    }
+
+    document.getElementById('save-profile-btn').addEventListener('click', () => {
+      const username = document.getElementById('username-input').value;
+      const profilePicInput = document.getElementById('profile-pic-input');
+
+      if (username && profilePicInput.files.length > 0) {
+        localStorage.setItem('username', username);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          localStorage.setItem('profilePic', e.target.result);
+          location.reload();
+        };
+        reader.readAsDataURL(profilePicInput.files[0]);
+      }
+    });
+
+    const savedUsername = localStorage.getItem('username');
+    const savedProfilePic = localStorage.getItem('profilePic');
+
+    if (savedUsername) {
+      document.getElementById('username').textContent = savedUsername;
+    }
+
+    if (savedProfilePic) {
+      document.getElementById('profile-pic').src = savedProfilePic;
+    }
+
+    // Color Picker and Customization
+    const textColorPicker = document.getElementById('text-color-picker');
+    document.getElementById('customize-btn').addEventListener('click', () => {
+      textColorPicker.click(); // Directly open the color wheel
+    });
+
+    textColorPicker.value = localStorage.getItem('text-color') || '#ffffff';
+    textColorPicker.addEventListener('input', function () {
+      document.documentElement.style.setProperty('--text-color', this.value);
+      document.querySelector('.profile-section img').style.borderColor = this.value; // Update profile pic border
+      document.querySelectorAll('.banner h2').forEach(heading => heading.style.color = this.value); // Update heading color
+      document.querySelectorAll('.banner a').forEach(button => button.style.backgroundColor = this.value); // Update button background
+      document.querySelector('.welcome-message').style.color = this.value; // Update welcome message color
+      document.querySelector('.back-button').style.backgroundColor = this.value; // Update back to home button
+      localStorage.setItem('text-color', this.value);
+    });
+
+    // Reset to Defaults
+    document.getElementById('reset-defaults-btn').addEventListener('click', () => {
+      document.documentElement.style.setProperty('--text-color', '#ffffff');
+      localStorage.removeItem('text-color');
+      location.reload();
+    });
+
+    // Apply color scheme on page load
+    window.addEventListener('load', () => {
+      const savedColor = localStorage.getItem('text-color');
+      if (savedColor) {
+        document.querySelectorAll('.banner h2').forEach(heading => heading.style.color = savedColor);
+        document.querySelectorAll('.banner a').forEach(button => button.style.backgroundColor = savedColor);
+        document.querySelector('.profile-section img').style.borderColor = savedColor;
+        document.querySelector('.welcome-message').style.color = savedColor;
+        document.querySelector('.back-button').style.backgroundColor = savedColor;
+      }
+    });
+
+    // About Pop-up
+    document.getElementById('about-btn').addEventListener('click', () => {
+      document.getElementById('about-popup').style.display = 'block';
+    });
+
+    document.getElementById('close-about-popup').addEventListener('click', () => {
+      document.getElementById('about-popup').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
