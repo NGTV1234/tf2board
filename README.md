@@ -2,7 +2,8 @@
 
 A simple dashboard that lives in your bookmarks bar. Why bookmark multiple sites, when it's provided in a single dashboard? Save space & resources.
 
-[![Watch the demo](https://raw.githubusercontent.com/username/repository/branch/path/to/thumbnail.jpg)](https://raw.githubusercontent.com/username/repository/branch/path/to/video.mp4)
+[![Watch the video](https://raw.githubusercontent.com/NGTV1234/tf2board/main/.../demo.mov)
+
 ## Contributors
 
 - [@NGTV1234](https://www.github.com/NGTV1234)
