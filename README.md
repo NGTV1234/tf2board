@@ -2,7 +2,7 @@
 
 A simple dashboard that lives in your bookmarks bar. Why bookmark multiple sites, when it's provided in a single dashboard? Save space & resources.
 
-[![TF2Board Demo](https://img.youtube.com/vi/SNVq1MALzss/0.jpg)](https://www.youtube.com/watch?v=SNVq1MALzss)
+https://github.com/user-attachments/assets/91066fdb-a889-4590-8c82-8d8b2eff3b9a
 
 ## Contributors
 
